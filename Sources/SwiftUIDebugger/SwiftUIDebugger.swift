@@ -10,8 +10,6 @@ import SwiftUI
 
 public extension View {
 	
-#if DEBUG || FORCE_SWIFTUI_DEBUGGER
-
 	func printType() -> Self {
 		let mirrorOneLine = "\(Mirror(reflecting: self).subjectType)"
 		print(formatTypeString(mirrorOneLine))
@@ -30,17 +28,4 @@ public extension View {
 		let _ = Self._printChanges()
 		return self
 	}
-
-#else
-	
-//	@available(*, deprecated, message: "This function is deprecated.")
-	func printType() -> Self { self }
-	
-	func randomBackground() -> some View { self }
-	
-	func randomBorder() -> some View { self }
-
-	func printChanges() -> some View { self }
-	
-#endif
 }
