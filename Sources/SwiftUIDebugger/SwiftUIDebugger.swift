@@ -24,8 +24,4 @@ public extension View {
 		border(Color.random)
 	}
 	
-	func printChanges() -> some View {
-		let _ = Self._printChanges()
-		return self
-	}
 }
