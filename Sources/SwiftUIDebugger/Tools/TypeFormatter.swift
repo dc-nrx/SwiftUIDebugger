@@ -7,8 +7,9 @@
 
 import Foundation
 
-enum Bracket: Hashable {
+enum Delimiter: Hashable {
 	case open
+	case comma
 	case close
 }
 
@@ -24,7 +25,7 @@ func formatTypeString(
 	var depth = 0
 	let s = Array(sStr)
 	var res = ""
-	let br = bracks(s, openBr, closeBr)
+	let br = findDelimiters(s, openBr, closeBr, comma)
 	var brIdx = 0
 	var i = 0
 	while i < s.count {
@@ -71,18 +72,22 @@ func formatTypeString(
 	return res
 }
 
-func bracks(
+func findDelimiters(
 	_ s: [Character],
 	_ openBr: Character,
-	_ closeBr: Character
-) -> [Bracket] {
-	var result = [Bracket]()
+	_ closeBr: Character,
+	_ comma: Character
+) -> [Delimiter] {
+	var result = [Delimiter]()
 	for c in s {
-		if c == "<" {
+		if c == openBr {
 			result.append(.open)
-		} else if c == ">" {
+		} else if c == closeBr {
 			result.append(.close)
 		}
+//		else if c == "," {
+//			result.append(.comma)
+//		}
 	}
 	return result
 }
