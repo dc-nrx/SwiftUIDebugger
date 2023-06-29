@@ -16,24 +16,24 @@ enum Delimiter: Hashable {
 func formatTypeString(
 	_ sStr: String,
 	tab: String = "∣  ",
-	openBr: Character = "<",
-	closeBr: Character = ">",
-	openPar: Character = "(",
-	closePar: Character = ")",
+	openBracket: Character = "<",
+	closeBracket: Character = ">",
+	openParenthesis: Character = "(",
+	closeParenthesis: Character = ")",
 	comma: Character = ","
 ) -> String {
 	var depth = 0
 	let s = Array(sStr)
 	var res = ""
-	let br = findDelimiters(s, openBr, closeBr, comma)
+	let br = findDelimiters(s, openBracket, closeBracket, comma)
 	var brIdx = 0
 	var i = 0
 	while i < s.count {
 		switch s[i] {
-		case openBr:
+		case openBracket:
 			depth += 1
 			res.append("<")
-			if s[safe: i + 1] == openPar {
+			if s[safe: i + 1] == openParenthesis {
 				i += 1
 				res.append("(")
 			}
@@ -41,17 +41,17 @@ func formatTypeString(
 				res.append("\n" + String(repeating: tab, count: depth))
 			}
 			brIdx += 1
-		case closePar:
-			if s[safe: i + 1] == closeBr {
+		case closeParenthesis:
+			if s[safe: i + 1] == closeBracket {
 				i += 1
 				fallthrough
 			}
-		case closeBr:
+		case closeBracket:
 			depth -= 1
 			if br[safe: brIdx - 1] != .open {
 				res.append("\n" + String(repeating: tab, count: depth))
 			}
-			if s[safe: i - 1] == closePar {
+			if s[safe: i - 1] == closeParenthesis {
 				res.append(")")
 			}
 			res.append(">")
