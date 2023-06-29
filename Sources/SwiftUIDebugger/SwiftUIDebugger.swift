@@ -25,6 +25,11 @@ public extension View {
 	func randomBorder() -> some View {
 		border(Color.random)
 	}
+	
+	func printChanges() -> some View {
+		let _ = Self._printChanges()
+		return self
+	}
 
 #else
 	
@@ -35,5 +40,7 @@ public extension View {
 	
 	func randomBorder() -> some View { self }
 
+	func printChanges() -> some View { self }
+	
 #endif
 }
