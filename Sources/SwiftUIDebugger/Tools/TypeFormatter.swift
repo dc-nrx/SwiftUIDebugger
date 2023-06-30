@@ -25,44 +25,49 @@ func formatTypeString(
 	var depth = 0
 	let s = Array(sStr)
 	var res = ""
-	let br = findDelimiters(s, openBracket, closeBracket, comma)
-	var brIdx = 0
+	let delimiters = findDelimiters(s, openBracket, closeBracket, comma)
+	var delimiterIdx = 0
+	
 	var i = 0
 	while i < s.count {
 		switch s[i] {
 		case openBracket:
-			depth += 1
-			res.append("<")
+			res.append(openBracket)
+			// Keep < and ( togather
 			if s[safe: i + 1] == openParenthesis {
 				i += 1
-				res.append("(")
+				res.append(openParenthesis)
 			}
-			if br[safe: brIdx + 1] != .close {
-				res.append("\n" + String(repeating: tab, count: depth))
+			// Avoid going to new line if there are no nested brackets
+			if delimiters[safe: delimiterIdx + 1] != .close {
+				depth += 1
+				res.appendTab(depth, tab)
 			}
-			brIdx += 1
+			delimiterIdx += 1
 		case closeParenthesis:
 			if s[safe: i + 1] == closeBracket {
 				i += 1
 				fallthrough
 			}
 		case closeBracket:
-			depth -= 1
-			if br[safe: brIdx - 1] != .open {
-				res.append("\n" + String(repeating: tab, count: depth))
+			if delimiters[safe: delimiterIdx - 1] != .open {
+				depth -= 1
+				res.appendTab(depth, tab)
 			}
 			if s[safe: i - 1] == closeParenthesis {
-				res.append(")")
+				res.append(closeParenthesis)
 			}
-			res.append(">")
-			brIdx += 1
+			res.append(closeBracket)
+			delimiterIdx += 1
 			if s[safe: i + 1] == "," {
 				i += 1
 				fallthrough
 			}
 		case comma:
-			res.append(String(s[i]) + "\n" + String(repeating: tab, count: depth))
+			res.append(s[i])
+			res.appendTab(depth, tab)
 		case " ":
+			// Drop whitespaces - there will be a newline anyway
 			break
 		default:
 			res.append(s[i])
@@ -70,6 +75,16 @@ func formatTypeString(
 		i += 1
 	}
 	return res
+}
+
+private extension String {
+
+	mutating func appendTab(
+		_ depth: Int,
+		_ tab: String
+	) {
+		append("\n" + String(repeating: tab, count: depth))
+	}
 }
 
 func findDelimiters(
